@@ -2,7 +2,6 @@
 
 namespace App\Model;
 
-use App\Database\Database;
 use App\Database\Query;
 
 class Usuario
@@ -16,8 +15,23 @@ class Usuario
 
     public function buscarPorEmail(string $email): array
     {
-        $usuario = $this->query->select('usuario', 'email = ' . $email);
+        $usuario = $this->query->select(
+            tabela: 'usuario',
+            condicao: "email="."'".$email."'" 
+        );
 
         return $usuario;
+    }
+
+    public function cadastrar(string $nome, string $email, string $senha): void
+    {
+        $this->query->insert(
+            tabela: 'usuario',
+            dados: [
+                'nome' => $nome,
+                'email' => $email,
+                'senha' => $senha
+            ]
+        );
     }
 }

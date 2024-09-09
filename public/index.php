@@ -16,4 +16,3 @@ foreach ($router['routes'] as $route => $controller) {
 
 $notFoundController = new $router['default']();
 $notFoundController->index($_REQUEST);
-exit;

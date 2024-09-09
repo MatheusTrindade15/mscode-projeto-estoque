@@ -2,6 +2,8 @@
 
 namespace App\Database;
 
+use App\Controller\AbstractController;
+
 class Query
 {
     private \PDO $pdo;
@@ -9,13 +11,13 @@ class Query
     public function __construct()
     {
         $database = new Database(
-            host: '127.0.0.1',
+            host: 'localhost',
             database: 'mscode_estoque',
             username: 'root',
-            password: 'root',
+            password: 'mscode2024',
             port: 3306,
         );
-
+        
         $this->pdo = $database->connection();
     }
 
@@ -25,16 +27,18 @@ class Query
             $sql = "SELECT {$colunas} FROM {$tabela}";
 
             if($condicao !== null) {
-                $sql .= " WHERE {$condicao}";
+                $sql .= " WHERE {$condicao};";
+            }else{
+                $sql .= ';';
             }
-
+            
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute();
-
+            
             return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            
         } catch (\PDOException $e) {
             echo "Erro na consulta: {$e->getMessage()}";
-
             return false;
         }
     }
@@ -46,13 +50,10 @@ class Query
             $valores = ':' . implode(', :', array_keys($dados));
 
             $sql = "INSERT INTO {$tabela} ({$colunas}) VALUES ({$valores})";
-
             $stmt = $this->pdo->prepare($sql);
-
             foreach ($dados as $coluna => $valor) {
                 $stmt->bindValue(":{$coluna}", $valor);
             }
-
             $stmt->execute();
 
             return $this->pdo->lastInsertId();
@@ -72,7 +73,7 @@ class Query
                 $sets[] = "{$coluna} = :{$coluna}";
             }
 
-            $sql = "UPDATE {$tabela} SET " . implode(', ', $sets) . " WHERE {$condicao}";
+            $sql = "UPDATE {$tabela} SET " . implode(', ', $sets) . " WHERE {$condicao};";
 
             $stmt = $this->pdo->prepare($sql);
 

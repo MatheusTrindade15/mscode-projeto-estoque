@@ -3,7 +3,6 @@
 namespace App\Database;
 
 use PDO;
-use PDOException;
 
 readonly class Database
 {
@@ -18,9 +17,7 @@ readonly class Database
     ) {
         try {
             $dsn = "mysql:host={$host};dbname={$database};charset=utf8";
-            if ($port) {
-                $dsn .= ";port={$port};";
-            }
+            if ($port) $dsn .= ";port={$port};";
 
             $this->pdo = new PDO(
                 dsn: $dsn,
@@ -29,7 +26,7 @@ readonly class Database
             );
 
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             echo "Erro na conexão: {$e->getMessage()}";
             exit;
         }
